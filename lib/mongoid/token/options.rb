@@ -35,6 +35,8 @@ class Mongoid::Token::Options
     @options[:pattern] ||= case @options[:contains].to_sym
     when :alphanumeric
       "%s#{@options[:length]}"
+    when :alphanumeric_upper
+      "%S#{@options[:length]}"
     when :alpha
       "%w#{@options[:length]}"
     when :alpha_upper

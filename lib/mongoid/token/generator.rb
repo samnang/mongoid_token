@@ -4,6 +4,7 @@
 # %d - digit
 # %D - non-zero digit / no-leading zero digit if longer than 1
 # %s - alphanumeric character
+# %S - alphanumeric upper character
 # %w - upper and lower alpha character
 # %p - URL-safe punctuation
 #
@@ -12,7 +13,7 @@
 module Mongoid
   module Token
     module Generator
-      REPLACE_PATTERN = /%((?<character>[cCdDhHpsw]{1})(?<length>\d+(,\d+)?)?)/
+      REPLACE_PATTERN = /%((?<character>[cCdDhHpsSw]{1})(?<length>\d+(,\d+)?)?)/
 
       def self.generate(pattern)
         pattern.gsub REPLACE_PATTERN do |match|
@@ -35,6 +36,8 @@ module Mongoid
             integer(length, 16)
           when 's'
             alphanumeric(length)
+          when 'S'
+            alphanumeric_upper(length)
           when 'w'
             alpha(length)
           when 'p'
@@ -70,6 +73,10 @@ module Mongoid
 
       def self.alphanumeric(length = 1)
         (1..length).collect { (i = Kernel.rand(62); i += ((i < 10) ? 48 : ((i < 36) ? 55 : 61 ))).chr }.join
+      end
+
+      def self.alphanumeric_upper(length = 1)
+        (1..length).collect { (i = Kernel.rand(36); i += ((i < 10) ? 48 : 55)).chr }.join
       end
 
       def self.punctuation(length = 1)
